@@ -31,155 +31,51 @@ def poberi_povezave(strani):
             page_content = music_side.read() 
             povezava = re.findall(regexp, page_content)
             povezave.extend(povezava)
-            #print(len(povezave))
-            #print(povezave)
     return povezave
     
 
 def html_glasb(povezave, music_file): 
     stevilo_mape = 1      
     for povezava in povezave:
-        url = zacetek_url + f'{povezava}'
+        song_url = zacetek_url + f'{povezava}'
         datoteka = os.path.join(music_file, f'glasbe{stevilo_mape}.html')
-        orodja.shrani_spletno_stran(url, datoteka)
+        orodja.shrani_spletno_stran(song_url, datoteka)
         stevilo_mape += 1
+
+vzorec = (
+    r'Scrobbles<.*?<abbr .*? title=".*?">(?P<scrobbles>.*?)</abbr>.*?>Listeners<.*?<abbr .*? title=".*?">(?P<st_poslusalcev>.*?)</abbr>'
+    r'.*?<dd class="catalogue-metadata-description">.*?' 
+    r'(?P<dolzina>\d..*?\d\d).*?'
+    r'</p>.*?class="catalogue-tags ".*?'
+    r'Related Tags.*?href="/tag/(?P<prvi_zanr>.*?)".*?'
+    r'class="tag".*?href="/tag/(?P<drugi_zanr>.*?)".*?'
+    r'class="tag".*?href="/tag/(?P<tretji_zanr>.*?)".*?'
+    r'data-track-name="(?P<naslov>.*?)".*?'
+    r'.*?data-artist-name="(?P<izvajalec>.*?)"'
+)
+
+def podatki_iz_html(music_file):
+    iskani_podatki = []
+    for i in range(STEVILO_PESMI_NA_STRANI * STEVILO_STRANI):
+        mapa = f'glasbe{i+1}.html'
+        zdruzi = os.path.join(music_file, mapa)
+        vsebina = orodja.vsebina_datoteke(zdruzi)
+        regexp = re.compile(vzorec, re.DOTALL)
+        podatek = re.search(regexp, vsebina)
+        if podatek:
+            iskani_podatki.append(podatek.groupdict())
+        print(iskani_podatki)
+    return iskani_podatki
+
 
 def main():
 #    preberi(music_directory)    
 #    poberi_povezave(music_directory)
 #    povezave = poberi_povezave(music_directory)
 #    html_glasb(povezave, music_side_filename)
+    podatki_iz_html(music_side_filename)
 
 
-
-
-
-
-#def save_frontpage(page, directory, filename):
-#    """Funkcija shrani vsebino spletne strani na naslovu "page" v datoteko
-#    "directory"/"filename"."""
-#    raise NotImplementedError()
-#
-#
-################################################################################
-## Po pridobitvi podatkov jih želimo obdelati.
-################################################################################
-#
-#
-#def read_file_to_string(directory, filename):
-#    with open(os.path.join(directory, filename), encoding="utf-8") as input_file:
-#        return input_file.read()
-#
-#
-## Definirajte funkcijo, ki sprejme niz, ki predstavlja vsebino spletne strani,
-## in ga razdeli na dele, kjer vsak del predstavlja en oglas. To storite s
-## pomočjo regularnih izrazov, ki označujejo začetek in konec posameznega
-## oglasa. Funkcija naj vrne seznam nizov.
-#
-#
-#def page_to_ads(page_content):
-#    pattern = r'<tr(.*?)class="(.*?)chartlist-row(.*?)</tr>'
-#    regexp = re.compile(pattern, re.DOTALL)
-#
-#    return re.findall(regexp, page_content)
-#
-#
-## Definirajte funkcijo, ki sprejme niz, ki predstavlja oglas, in izlušči
-## podatke o imenu, lokaciji, datumu objave in ceni v oglasu.
-#
-#
-#def get_dict_from_ad_block(block):
-#    pattern = r'<a(.*?)class="(.*?)chartlist-play-button(.*?)data-track-url="(?P<href>).*?".*?</a>'
-#    regexp = re.compile(pattern, re.DOTALL)
-#    najdeno = re.search(regexp, block)
-#    if najdeno:
-#        return najdeno.groupdict()
-#    return None
-#
-#
-## Definirajte funkcijo, ki sprejme ime in lokacijo datoteke, ki vsebuje
-## besedilo spletne strani, in vrne seznam slovarjev, ki vsebujejo podatke o
-## vseh oglasih strani.
-#
-#
-#def ads_from_file(filename, directory):
-#    """Funkcija prebere podatke v datoteki "directory"/"filename" in jih
-#    pretvori (razčleni) v pripadajoč seznam slovarjev za vsak oglas posebej."""
-#    raise NotImplementedError()
-#
-#
-################################################################################
-## Obdelane podatke želimo sedaj shraniti.
-################################################################################
-#
-#
-#def write_csv(fieldnames, rows, directory, filename):
-#    """
-#    Funkcija v csv datoteko podano s parametroma "directory"/"filename" zapiše
-#    vrednosti v parametru "rows" pripadajoče ključem podanim v "fieldnames"
-#    """
-#    os.makedirs(directory, exist_ok=True)
-#    path = os.path.join(directory, filename)
-#    with open(path, 'w', encoding='utf-8') as csv_file:
-#        writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
-#        writer.writeheader()
-#        for row in rows:
-#            writer.writerow(row)
-#    return
-#
-#
-## Definirajte funkcijo, ki sprejme neprazen seznam slovarjev, ki predstavljajo
-## podatke iz oglasa mačke, in zapiše vse podatke v csv datoteko. Imena za
-## stolpce [fieldnames] pridobite iz slovarjev.
-#
-#
-#def write_cat_ads_to_csv(ads, directory, filename):
-#    """Funkcija vse podatke iz parametra "ads" zapiše v csv datoteko podano s
-#    parametroma "directory"/"filename". Funkcija predpostavi, da so ključi vseh
-#    slovarjev parametra ads enaki in je seznam ads neprazen."""
-#    # Stavek assert preveri da zahteva velja
-#    # Če drži se program normalno izvaja, drugače pa sproži napako
-#    # Prednost je v tem, da ga lahko pod določenimi pogoji izklopimo v
-#    # produkcijskem okolju
-#    assert ads and (all(j.keys() == ads[0].keys() for j in ads))
-#    raise NotImplementedError()
-#
-#
-## Celoten program poženemo v glavni funkciji
-#
-#def main(redownload=True, reparse=True):
-#    """Funkcija izvede celoten del pridobivanja podatkov:
-#    1. Oglase prenese iz bolhe
-#    2. Lokalno html datoteko pretvori v lepšo predstavitev podatkov
-#    3. Podatke shrani v csv datoteko
-#    """
-#    # Najprej v lokalno datoteko shranimo glavno stran
-#      
-#    #spletna_stran = download_url_to_string(music_side_url)
-#    #save_string_to_file(spletna_stran, music_directory, music_side_filename)
-#
-#    # Iz lokalne (html) datoteke preberemo podatke
-#    vsebina = read_file_to_string(music_directory, music_side_filename)
-#
-#    # Podatke preberemo v lepšo obliko (seznam slovarjev)
-#
-#    seznam_reklam = page_to_ads(vsebina)
-#    print(seznam_reklam)
-#    seznam_podatkov = [
-#        get_dict_from_ad_block(oglas) for oglas in seznam_reklam
-#    ]
-#
-#    print(seznam_podatkov)
-#
-#    # Podatke shranimo v csv datoteko
-#
-#    # Dodatno: S pomočjo parametrov funkcije main omogoči nadzor, ali se
-#    # celotna spletna stran ob vsakem zagon prenese (četudi že obstaja)
-#    # in enako za pretvorbo
-#
-#    
-#
-#
 
 
 if __name__ == '__main__':
