@@ -2,8 +2,6 @@ import csv
 import os
 import orodja
 
-
-import requests
 import re
 
 STEVILO_STRANI = 20
@@ -13,18 +11,19 @@ music_side_url = 'https://www.last.fm/tag/rock/tracks'
 zacetek_url = 'https://www.last.fm'
 music_directory = 'podatki_pesmi'
 music_side_filename = 'glasba.html'
-csv_filename = 'popularna_rock_glasba'
+csv_filename = 'popularna_rock_glasba.csv'
+
 
 def preberi(mapa):
-    for stran in range(1, STEVILO_STRANI + 1):
-        url = music_side_url + f'?page={stran}'
-        datoteka = os.path.join(mapa, f'prebrane_strani{stran}.html')
+    for i in range(STEVILO_STRANI):
+        url = music_side_url + f'?page={i+1}'
+        datoteka = os.path.join(mapa, f'prebrane_strani{i+1}.html')
         orodja.shrani_spletno_stran(url, datoteka)
 
 def poberi_povezave(strani):
     povezave = []
-    for i in range(1, STEVILO_STRANI + 1):
-        datoteka = os.path.join(strani, f"prebrane_strani{i}.html")
+    for i in range(STEVILO_STRANI):
+        datoteka = os.path.join(strani, f"prebrane_strani{i+1}.html")
         with open(datoteka, "r",  encoding="utf-8") as music_side:
             pattern = r'<td.*?class="chartlist-name".*?<a.*?href="(/music/.*?)".*?</a>' 
             regexp = re.compile(pattern, re.DOTALL)
@@ -64,8 +63,8 @@ def podatki_iz_html(music_file):
         podatek = re.search(regexp, vsebina)
         if podatek:
             iskani_podatki.append(podatek.groupdict())
-        print(iskani_podatki)
     return iskani_podatki
+
 
 
 def main():
@@ -73,8 +72,9 @@ def main():
 #    poberi_povezave(music_directory)
 #    povezave = poberi_povezave(music_directory)
 #    html_glasb(povezave, music_side_filename)
-    podatki_iz_html(music_side_filename)
-
+#    podatki_iz_html(music_side_filename)
+    slovarji = podatki_iz_html(music_side_filename)
+    orodja.zapisi_csv(slovarji, ['scrobbles', 'st_poslusalcev', 'dolzina', 'prvi_zanr', 'drugi_zanr', 'tretji_zanr', 'naslov', 'izvajalec'], csv_filename)
 
 
 
