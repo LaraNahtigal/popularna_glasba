@@ -6,14 +6,16 @@ Analizirala bom prvih 1.000 popularnih rock glasb vseh časov.
 
 Za vsako glasbo bom zajela:
 * naslov in izvajalca 
-* leto izida, dolžino in tri glavne žanre
+* dolžino in tri glavne žanre
 * število poslušalcev
 * število 'Scrobbles-ov'(ljudje ki izdajo neke glasbe, da lahko sledijo številu predvanaj in poslušanj te pesmi)
+* dolžino glasb pretvorjeno v sekunde, število poslušalcev in Scrobbles-ov v enakih enotah
 
 
 Hipoteze:
-* Ali obstaja povezava med tem kako visoko na seznamu je skladba in številu poslušalcev?
-* Ali se na visoko poslušanih mestih velikokrat ponovijo isti izvajalci?
-* Ali je bilo kakšno specifično leto še posebej pomembno za rock glasbo (tj. izšlo je veliko popularnih komadov)?
+* Na seznamu najbolj poslušanih rock glasb se bodo večkrat pojavili enaki izvajalci in to vsaj dvajsetkrat.
+* Najbolj poslušana glasba na seznamu ima 2,4M poslušalcev. Največje število glasb iz seznama bo imelo srednje dobro poslušanost, tj. okoli 1,2M.
+* Največ glasb iz seznama bo po dolžini nekje med 3,5 in 4,5 minutah. 
 
-CSV datoteka vsebuje naslov glasbe in njenega izvajalca, dolžino, tri glavne "oznake"(žanre), število poslušalcev in število scrobbles-ov.
+CSV datoteka vsebuje naslov glasbe in njenega izvajalca, dolžino, dolžino pretvorjeno v sekunde, tri glavne "oznake"(žanre), število poslušalcev in 
+število scrobbles-ov, ter njuno število v tisočkah.
