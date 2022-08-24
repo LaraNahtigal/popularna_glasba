@@ -1,8 +1,7 @@
 Najbolj popularna rock glasba vseh časov
 =======================
 
-Analizirala bom prvih 1.000 popularnih rock glasb vseh časov.
-[last.fm](https://www.last.fm/tag/rock/tracks).
+Analizirala bom prvih 1.000 popularnih rock glasb vseh časov. Podatke bom zajela iz spletne strani [last.fm](https://www.last.fm/tag/rock/tracks).
 
 Za vsako glasbo bom zajela:
 * naslov in izvajalca 
